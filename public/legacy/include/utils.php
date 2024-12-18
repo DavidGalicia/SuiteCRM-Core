@@ -2654,15 +2654,21 @@ function clean_incoming_data()
     $post = array_map('securexss', $_POST);
     $get = array_map('securexss', $_GET);
 
+    $excluded_fields = ['rest_data'];
+
     // PHP cannot stomp out superglobals reliably
     foreach ($post as $k => $v) {
-        $_POST[$k] = $v;
+        if (!in_array($k, $excluded_fields)) {
+          $_POST[$k] = $v;
+        }
     }
     foreach ($get as $k => $v) {
         $_GET[$k] = $v;
     }
     foreach ($req as $k => $v) {
-        $_REQUEST[$k] = $v;
+        if (!in_array($k, $excluded_fields)) {
+          $_REQUEST[$k] = $v;
+        }
 
         //ensure the keys are safe as well.  If mbstring encoding translation is on, the post keys don't
         //get translated, so scrub the data but don't die
