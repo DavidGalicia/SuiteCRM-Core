@@ -68,7 +68,7 @@ class SugarLogger implements LoggerTemplate
     protected $maxLogs = 10;
     protected $filesuffix = "";
     protected $date_suffix = "";
-    protected $log_dir = '.';
+    protected $log_dir = '../../logs/legacy';
     protected $defaultPerms = 0664;
 
 
@@ -81,7 +81,7 @@ class SugarLogger implements LoggerTemplate
         "%m_%Y"    => "Month_Year",
         "%d_%m"    => "Day_Month",
         "%m_%d_%y" => "Month_Day_Year",
-        );
+    );
 
     /**
      * Let's us know if we've initialized the logger file
@@ -121,6 +121,11 @@ class SugarLogger implements LoggerTemplate
      * Reads the config file for logger settings
      */
     public function __construct()
+    {
+        $this->init();
+    }
+
+    protected function init(): void
     {
         $config = SugarConfig::getInstance();
         $this->ext = $config->get('logger.file.ext', $this->ext);
@@ -204,7 +209,7 @@ class SugarLogger implements LoggerTemplate
         $level,
         $message
         ) {
-        global $sugar_config;
+        global $sugar_config, $timezone;
 
         if (!$this->initialized) {
             return;
@@ -233,11 +238,22 @@ class SugarLogger implements LoggerTemplate
             $message .= ("\n" . $trace);
         }
 
+        $language = $sugar_config['default_language'];
+
+        $format = new IntlDateFormatter(
+            $language,
+            IntlDateFormatter::MEDIUM,
+            IntlDateFormatter::MEDIUM,
+            $timezone,
+            IntlDateFormatter::GREGORIAN,
+            $this->getDateFormatString(),
+        );
+
         //write out to the file including the time in the dateFormat the process id , the user id , and the log level as well as the message
         fwrite(
             $this->fp,
-            strftime($this->dateFormat) . ' [' . getmypid() . '][' . $userID . '][' . strtoupper($level) . '] ' . $message . "\n"
-            );
+            $this->formatLog($format, $userID, $level, $message)
+        );
     }
 
     /**
@@ -302,5 +318,25 @@ class SugarLogger implements LoggerTemplate
             fclose($this->fp);
             $this->fp = false;
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDateFormatString(): string
+    {
+        return "EEE MMM d yyyy 'at' HH:mm:ss";
+    }
+
+    /**
+     * @param IntlDateFormatter $format
+     * @param string $userID
+     * @param $level
+     * @param mixed $message
+     * @return string
+     */
+    protected function formatLog(IntlDateFormatter $format, string $userID, $level, mixed $message): string
+    {
+        return $format->format(time()) . ' [' . getmypid() . '][' . $userID . '][' . strtoupper($level) . '] ' . $message . "\n";
     }
 }

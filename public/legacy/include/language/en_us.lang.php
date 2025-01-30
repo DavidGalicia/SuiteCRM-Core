@@ -2172,6 +2172,7 @@ $app_strings = array(
     'LBL_DUPLICATE_BUTTON_KEY' => 'u',
     'LBL_DUPLICATE_BUTTON_LABEL' => 'Duplicate',
     'LBL_DUPLICATE_BUTTON_TITLE' => 'Duplicate',
+    'LBL_DISABLE_USER_2FA' => 'Disable 2FA',
     'LBL_DELETE_BUTTON_KEY' => 'd',
     'LBL_DELETE_BUTTON_LABEL' => 'Delete',
     'LBL_DELETE_BUTTON_TITLE' => 'Delete',
@@ -2293,7 +2294,37 @@ $app_strings = array(
     'LBL_COLUMN_SELECTOR_HIDDEN_COLS' => 'HIDDEN',
     'LBL_COLUMN_SELECTOR_CLOSE_BUTTON' => 'Close',
     'LBL_COLUMN_SELECTOR_SAVE_BUTTON' => 'Save Changes',
-    'LBL_COLUMN_SELECTOR_MODAL_TITLE' => 'Choose Columns'
+    'LBL_COLUMN_SELECTOR_MODAL_TITLE' => 'Choose Columns',
+
+    // Two-Factor Authentication
+    'LBL_ENTER_AUTH_APP_2FA_CODE' => 'Please enter the verification code from your authenticator app',
+    'LBL_ENABLE_2FA_LABEL' => 'Enable Two-Factor Authentication',
+    'LBL_BACKUP_CODES' => 'Recovery/Backup Codes',
+    'LBL_BACKUP_CODES_INFO' => 'Backup codes are one time passcodes to use when you are unable to verify via your Authenticator app.',
+    'LBL_BACKUP_CODES_WARN' => ' WARNING: These codes are only generated once. Please copy BEFORE verifying as these will not be displayed again.',
+    'LBL_PROBLEMS_GENERATING_CODE' => 'Problems generating the code?',
+    'LBL_BACKUP_CODES_FALLBACK_INSTRUCTIONS' => 'Use one of the backup codes (it expires after being used)',
+    'LBL_OTP_SETUP' => 'Use a OTP (one time password) authenticator on your mobile or computer to enable 2FA (Two-Factor Authentication)',
+    'LBL_QR_CODE_HELP' => "If you haven't already, please download an Authenticator Application (such as FreeOTP or Google Authenticator). Use that app to scan the QR code.",
+    'LBL_USE_SECRET' => "Unable to scan the QR Code?",
+    'LBL_USE_SECRET_DESC' => "If you are unable to scan the QR code, please enter the secret below manually into your authenticator app.",
+    'LBL_HIDE_SECRET' => "Hide TOTP Secret",
+    'LBL_2FA_LOGIN_CANCEL' => 'Two Factor Authentication cancelled',
+
+    'LBL_FACTOR_AUTH_DISABLE' => 'Two Factor Authentication was Disabled',
+    'LBL_FACTOR_AUTH_SUCCESS' => 'Two Factor Authentication was Successful',
+    'LBL_FACTOR_AUTH_FAIL' => "Two Factor Authentication failed. Try again.",
+
+    'LBL_VERIFY_2FA' => 'Verify Code',
+    'LBL_TWO_FACTOR_AUTH' => 'Two Factor Authentication',
+    'LBL_TWO_FACTOR_AUTH_APP_METHOD' => 'Authenticator app',
+    'LBL_TWO_FACTOR_AUTH_APP_METHOD_DESCRIPTION' => 'Use an authentication app to generate 2-factor authentication codes when prompted',
+    'LBL_ENABLE' => 'Enable',
+    'LBL_ENABLED' => 'Enabled',
+    'LBL_DISABLE' => 'Disable',
+    'LBL_GENERATED' => 'Generated',
+    'LBL_REGENERATE_CODES' => 'Regenerate',
+    'LBL_REGENERATED_BACKUP_CODES' => 'Backup Codes Regenerated'
 
 );
 
@@ -3859,13 +3890,13 @@ $app_strings['LBL_AVERAGE_CLOSED_WON_PER_YEAR'] = 'Average Won Opportunity Per Y
 $app_strings['LBL_OPPORTUNITIES_TOTAL'] = 'Total Opportunity Value';
 $app_strings['LBL_CASE_TOTAL_DAYS_OPEN'] = 'Total Days Open';
 $app_strings['LBL_DAYS_OPEN'] = 'Days Open';
-$app_strings['LBL_DAYS_IN_SALE_STAGE'] = 'This Opportunity Has Been In This Sales Stage For';
+$app_strings['LBL_DAYS_IN_SALE_STAGE'] = 'DAY(S) THIS OPPORTUNITY HAS BEEN AT THIS SALES STAGE';
 $app_strings['LBL_STAT_DAYS'] = 'Day(s)';
 $app_strings['LBL_CLOSED_PER_YEAR'] = 'Closed Per Year';
 $app_strings['LBL_WAS_OPEN'] = 'This Case was Open For';
 $app_strings['LBL_HAS_BEEN_OPEN'] = 'This Case has been Open For';
 $app_strings['LBL_NUMBER_OF_CASES_PER_ACCOUNT'] = 'Number of Cases Per Account';
-$app_strings['LBL_TOTAL_CASES_FOR_THIS_ACCOUNT'] = 'Total Cases For This Account: ';
+$app_strings['LBL_TOTAL_CASES_FOR_THIS_ACCOUNT'] = 'Total Cases For This Account';
 $app_strings['LBL_NONE_OUTSTANDING'] = 'None';
 $app_strings['LBL_VALIDATION_ERROR_REQUIRED'] = 'Missing required field: {{fields.field.label}}';
 $app_strings['LBL_VALIDATION_ERROR_CURRENCY_FORMAT'] = "Invalid currency format. Expected: '{{context.expected}}'";
@@ -4002,3 +4033,4 @@ $app_strings['LBL_NEW_NOTIFICATION'] = "You have {{context.unread}} new notifica
 $app_strings['LBL_NOTIFICATION_ITEM_DATE'] = 'Due: {{fields.date_start.value}}';
 $app_strings['LBL_NOTIFICATION_ITEM_DATE_ENTERED'] = 'Notified: {{fields.snooze.value}}';
 $app_strings['LBL_QUICK_ACTIONS'] = 'Quick Actions';
+$app_strings['LBL_RELATIONSHIPS'] = 'Relationships';
