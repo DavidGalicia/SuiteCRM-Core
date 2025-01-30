@@ -25,7 +25,10 @@
  */
 
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {AttributeMap, ButtonInterface, emptyObject, Field, Record} from 'common';
+import {emptyObject} from '../../../../common/utils/object-utils';
+import {ButtonInterface} from '../../../../common/components/button/button.model';
+import {Field} from '../../../../common/record/field.model';
+import {Record, AttributeMap} from '../../../../common/record/record.model';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModuleNameMapper} from '../../../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
@@ -181,10 +184,10 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         this.search(term).pipe(
             take(1),
             map(data => data.filter(item => item[relateName] !== '')),
-            /*map(filteredData => filteredData.map(item => ({
+            map(filteredData => filteredData.map(item => ({
                 id: item.id,
                 [relateName]: item[relateName]
-            })))*/
+            })))
         ).subscribe(filteredOptions => {
             this.options = filteredOptions;
 
@@ -228,27 +231,6 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
      * @param {string} relateValue to set
      */
     protected setValue(id: string, relateValue: string): void {
-        if (relateValue) {
-            if (this.field.definition.populate_list && this.field.definition.field_list) {
-                for (let i = 0; i < this.field.definition.populate_list.length; i++) {
-                    const source_field = this.field.definition.populate_list[i]
-                    const dest_field = this.field.definition.field_list[i]
-                    if (source_field && dest_field && this.parent.fields[dest_field]) {
-                        this.parent.fields[dest_field].value = this.selectedValue[source_field] || ''
-                    }
-                }
-            }
-        } else {
-            if (this.field.definition.field_list) {
-                for (let i = 0; i < this.field.definition.field_list.length; i++) {
-                    const dest_field = this.field.definition.field_list[i]
-                    if (this.parent.fields[dest_field]) {
-                        this.parent.fields[dest_field].value = ''
-                    }
-                }
-            }
-        }
-
         const relate = this.buildRelate(id, relateValue);
         this.field.value = relateValue;
         this.field.valueObject = relate;
