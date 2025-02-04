@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, signal, ViewChild} from '@angular/core';
 import {emptyObject} from '../../../../common/utils/object-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {Field} from '../../../../common/record/field.model';
@@ -43,7 +43,8 @@ import {
 } from '../../../../containers/record-list-modal/components/record-list-modal/record-list-modal.model';
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic-display.manager';
-import {map, take} from "rxjs/operators";
+import {debounceTime, map, switchMap, tap} from "rxjs/operators";
+import {fromEvent} from "rxjs";
 import {Dropdown, DropdownFilterOptions} from "primeng/dropdown";
 
 @Component({
@@ -52,8 +53,9 @@ import {Dropdown, DropdownFilterOptions} from "primeng/dropdown";
     styleUrls: [],
     providers: [RelateService]
 })
-export class RelateEditFieldComponent extends BaseRelateComponent {
+export class RelateEditFieldComponent extends BaseRelateComponent implements AfterViewInit {
     @ViewChild('tag') tag: Dropdown;
+    @ViewChild('tag', {static: false, read: ElementRef}) tagElement: ElementRef;
     @ViewChild('dropdownFilterInput') dropdownFilterInput: ElementRef;
     selectButton: ButtonInterface;
     idField: Field;
@@ -62,6 +64,14 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     placeholderLabel: string = '';
     emptyFilterLabel: string = '';
     filterValue: string | undefined = '';
+    isLoading = signal(false)
+    spinnerStyle = {
+        position: 'absolute',
+        top: '.35rem',
+        right: '0.5rem',
+        width: '17px',
+        height: '17px',
+    }
 
     /**
      * Constructor
@@ -105,6 +115,40 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
 
     }
 
+    ngAfterViewInit() {
+        const keyup$ = fromEvent(this.tagElement.nativeElement, 'keyup').pipe(
+            tap(() => this.isLoading.set(true)),
+            debounceTime(400),
+            map((e: Event) => {
+                const matches = this.filterValue?.match(/^\s*$/g);
+                if (matches && matches.length) {
+                    this.filterValue = '';
+                }
+
+                return this.filterValue ?? '';
+            }),
+            switchMap((term: string) => this.search(term)),
+            map((data: any[]) => {
+                return data.filter(item => item[this.getRelateFieldName()])
+            }),
+        ).subscribe({
+            next: filteredOptions => {
+                this.options.set(filteredOptions)
+
+                if (this.selectedValue?.id) {
+                    let found = filteredOptions.some(value => value?.id === this.selectedValue.id);
+
+                    if (!found) {
+                        this.options().push(this.selectedValue);
+                    }
+                }
+
+                this.isLoading.set(false)
+            },
+            error: () => this.isLoading.set(false)
+        })
+    }
+
     protected init(): void {
 
         super.init();
@@ -136,7 +180,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         }
 
         this.selectedValue = this.field.valueObject;
-        this.options = [this.field.valueObject];
+        this.options.set([this.field.valueObject]);
     }
 
     /**
@@ -163,65 +207,22 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     onRemove(): void {
         this.setValue('', '');
         this.selectedValue = {};
-        this.options = [];
+        this.options.set([]);
     }
 
     onClear(event): void {
         this.selectedValue = {};
         this.filterValue = '';
-        this.options = [];
+        this.options.set([]);
         this.onRemove();
-    }
-
-    onFilter(): void {
-        const relateName = this.getRelateFieldName();
-        this.filterValue = this.filterValue ?? '';
-        const matches = this.filterValue.match(/^\s*$/g);
-        if (matches && matches.length) {
-            this.filterValue = '';
-        }
-        let term = this.filterValue;
-        this.search(term).pipe(
-            take(1),
-            map(data => data.filter(item => item[relateName] !== '')),
-            map(filteredData => filteredData.map(item => ({
-                id: item.id,
-                [relateName]: item[relateName]
-            })))
-        ).subscribe(filteredOptions => {
-            this.options = filteredOptions;
-
-            if (!this?.selectedValue || !this?.selectedValue?.id) {
-                return;
-            }
-
-            let found = false;
-            filteredOptions.some(value => {
-                if (value?.id === this.selectedValue.id) {
-                    found = true;
-                    return true;
-                }
-
-                return false;
-            });
-
-            if (found === false && this.selectedValue) {
-                this.options.push(this.selectedValue);
-            }
-        })
     }
 
     resetFunction(options: DropdownFilterOptions) {
         this.filterValue = '';
-        this.options = [];
+        this.options.set([]);
         if (!emptyObject(this.selectedValue)) {
-            this.options = [this.selectedValue];
+            this.options.set([this.selectedValue]);
         }
-    }
-
-    onFilterInput(event: KeyboardEvent) {
-        event.stopPropagation()
-        this.tag.onLazyLoad.emit()
     }
 
     /**
@@ -248,7 +249,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
             this.selectedValue = {id: id, [relateName]: relateValue};
         }
 
-        this.options = [this.selectedValue];
+        this.options.set([this.selectedValue]);
     }
 
     /**

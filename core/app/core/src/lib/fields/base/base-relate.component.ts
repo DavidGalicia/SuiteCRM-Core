@@ -36,11 +36,12 @@ import {LanguageStore} from '../../store/language/language.store';
 import {RelateService} from '../../services/record/relate/relate.service';
 import {FieldLogicManager} from '../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../field-logic-display/field-logic-display.manager';
+import {signal} from "@angular/core";
 
 @Component({template: ''})
 export class BaseRelateComponent extends BaseFieldComponent implements OnInit, OnDestroy {
     selectedValues: AttributeMap[] = [];
-    options: AttributeMap[] = [];
+    options = signal<AttributeMap[]>([]);
 
     status: '' | 'searching' | 'not-found' | 'error' | 'found' | 'no-module' = '';
     initModule = '';
@@ -100,7 +101,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
             this.init();
             this.status = '';
             this.selectedValues = [];
-            this.options = [];
+            this.options.set([]);
 
         }
     }
