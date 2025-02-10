@@ -586,7 +586,7 @@ class ApiBeanMapper
             if ($idName !== $field) {
 
                 $idValue = $values[$field]['id'] ?? '';
-                if (empty($values[$idName]) && !empty($idValue)) {
+                if (empty($values[$idName])) {
                     $values[$idName] = $idValue;
                 }
 
