@@ -232,6 +232,22 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
      * @param {string} relateValue to set
      */
     protected setValue(id: string, relateValue: string): void {
+        if (this.field.definition.field_list) {
+            for (let i = 0; i < this.field.definition.field_list.length; i++) {
+                const dest_field = this.field.definition.field_list[i] ?? ''
+
+                if (this.record.fields[dest_field] !== undefined) {
+                    if (id) {
+                        const source_field = this.field.definition.populate_list[i] ?? ''
+
+                        this.record.fields[dest_field].formControl.setValue(this.selectedValue[source_field] ?? '')
+                    } else {
+                        this.record.fields[dest_field].formControl.setValue('')
+                    }
+                }
+            }
+        }
+
         const relate = this.buildRelate(id, relateValue);
         this.field.value = relateValue;
         this.field.valueObject = relate;
@@ -243,13 +259,6 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             this.idField.formControl.setValue(id);
             this.idField.formControl.markAsDirty();
         }
-
-        if (relateValue) {
-            const relateName = this.getRelateFieldName();
-            this.selectedValue = {id: id, [relateName]: relateValue};
-        }
-
-        this.options.set([this.selectedValue]);
     }
 
     /**
