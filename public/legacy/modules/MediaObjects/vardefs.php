@@ -75,6 +75,10 @@ $mediaObjectFields = [
     ],
 ];
 
+$dictionary['MediaObject'] = [
+    'table' => 'does_not_exist',
+];
+
 $dictionary['ArchivedDocumentMediaObject'] = [
     'table' => 'archived_documents_media_objects',
     'audited' => false,

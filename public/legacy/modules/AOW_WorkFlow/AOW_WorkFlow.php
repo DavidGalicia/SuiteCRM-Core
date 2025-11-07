@@ -222,7 +222,7 @@ class AOW_WorkFlow extends Basic
      */
     public function run_bean_flows(SugarBean $bean)
     {
-        if (AOW_WorkFlow::$doNotRunInSaveLogic) {
+        if (AOW_WorkFlow::$doNotRunInSaveLogic || (!$GLOBALS['sugar_config']['installed'])) {
             return;
         }
 

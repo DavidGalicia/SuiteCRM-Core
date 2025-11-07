@@ -770,7 +770,10 @@ function handleLog4Php()
 function installLog($entry)
 {
     if (!empty($GLOBALS['install_log'])) {
-        $GLOBALS['install_log']->feedback($entry);
+        $previous = $GLOBALS['install_log']->getLogLevel();
+        $GLOBALS['install_log']->setLevel("info");
+        $GLOBALS['install_log']->info($entry);
+        $GLOBALS['install_log']->setLevel($previous);;
         return;
     }
 
@@ -2478,7 +2481,7 @@ function enableSugarFeeds()
 
 function create_writable_dir($dirname)
 {
-    if ((is_dir($dirname)) || @sugar_mkdir($dirname, 0755)) {
+    if ((is_dir($dirname)) || @sugar_mkdir($dirname, 0755, true)) {
         $ok = make_writable($dirname);
     }
     if (empty($ok)) {

@@ -634,7 +634,7 @@ class User extends Person implements EmailInterface
         // only admin user can change 2 factor authentication settings
         if ($smtp_error || $isUpdate && !is_admin($current_user)) {
             $tmpUser = BeanFactory::getBean('Users', $this->id);
-            if (!$tmpUser instanceof User) {
+            if ((!$tmpUser instanceof User) && $GLOBALS['sugar_config']['installed']) {
                 LoggerManager::getLogger()->fatal('User update error: Temp User is not retrieved at ID ' . $this->id . ', ' . gettype($tmpUser) . ' given');
             }
 
@@ -735,7 +735,7 @@ class User extends Person implements EmailInterface
 
         // User Profile specific save for Email addresses
         $this->lastSaveErrorIsEmailAddressSaveError = false;
-        if (!$this->emailAddress->saveAtUserProfile($_REQUEST)) {
+        if ($GLOBALS['sugar_config']['installed'] && !$this->emailAddress->saveAtUserProfile($_REQUEST)) {
             LoggerManager::getLogger()->fatal('Email address save error');
             $this->lastSaveErrorIsEmailAddressSaveError = true;
             return false;

@@ -888,6 +888,7 @@ class AppInstallService
             $currency->deleted = 1;
             $this->addDebug('Save currency');
             $currency->save();
+            BeanFactory::unregisterBean($currency->module_dir, $currency->id);
         }
 
 

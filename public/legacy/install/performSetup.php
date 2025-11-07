@@ -736,6 +736,7 @@ if (!empty($currency->id)
     $currency->deleted = 1;
     installLog('DBG: save currency');
     $currency->save();
+    BeanFactory::unregisterBean($currency->module_dir, $currency->id);
 }
 
 
